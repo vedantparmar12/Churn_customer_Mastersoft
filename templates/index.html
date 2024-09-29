@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Churn Predictor Pro</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <style>
+        body {
+            background-color: #1a1a1a;
+            color: #e0e0e0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .custom-card {
+            background-color: #2a2a2a;
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .custom-card-header {
+            background-color: #3a3a3a;
+            border-bottom: 1px solid #4a4a4a;
+            border-radius: 15px 15px 0 0;
+            padding: 20px;
+        }
+        .form-control, .form-select {
+            background-color: #3a3a3a;
+            border: 1px solid #4a4a4a;
+            color: #e0e0e0;
+        }
+        .form-control:focus, .form-select:focus {
+            background-color: #3a3a3a;
+            border-color: #5a5a5a;
+            color: #e0e0e0;
+            box-shadow: 0 0 0 0.25rem rgba(255, 255, 255, 0.25);
+        }
+        .btn-predict {
+            background-color: #4CAF50;
+            border: none;
+            padding: 10px 20px;
+            font-size: 18px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .btn-predict:hover {
+            background-color: #45a049;
+        }
+        .result-card {
+            background-color: #2a2a2a;
+            border: none;
+            border-radius: 15px;
+        }
+        .result-header {
+            background-color: #3a3a3a;
+            border-bottom: 1px solid #4a4a4a;
+            border-radius: 15px 15px 0 0;
+            padding: 15px;
+            font-size: 20px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid py-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <div class="custom-card mb-4">
+                    <div class="custom-card-header">
+                        <h1 class="text-center mb-0">Churn Predictor Pro</h1>
+                    </div>
+                    <div class="card-body">
+                        <form id="predictionForm">
+                            <div class="row g-3">
+                                <div class="col-md-4">
+                                    <label for="tenure" class="form-label">Tenure (months)</label>
+                                    <input type="number" class="form-control" id="tenure" name="tenure" required>
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="MonthlyCharges" class="form-label">Monthly Charges</label>
+                                    <input type="number" class="form-control" id="MonthlyCharges" name="MonthlyCharges" step="0.01" required>
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="TotalCharges" class="form-label">Total Charges</label>
+                                    <input type="number" class="form-control" id="TotalCharges" name="TotalCharges" step="0.01" required>
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="AvgMonthlyCharge" class="form-label">Average Monthly Charge</label>
+                                    <input type="number" class="form-control" id="AvgMonthlyCharge" name="AvgMonthlyCharge" step="0.01" required>
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="gender" class="form-label">Gender</label>
+                                    <select class="form-select" id="gender" name="gender" required>
+                                        <option value="Male">Male</option>
+                                        <option value="Female">Female</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="Partner" class="form-label">Partner</label>
+                                    <select class="form-select" id="Partner" name="Partner" required>
+                                        <option value="Yes">Yes</option>
+                                        <option value="No">No</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="Dependents" class="form-label">Dependents</label>
+                                    <select class="form-select" id="Dependents" name="Dependents" required>
+                                        <option value="Yes">Yes</option>
+                                        <option value="No">No</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="PhoneService" class="form-label">Phone Service</label>
+                                    <select class="form-select" id="PhoneService" name="PhoneService" required>
+                                        <option value="Yes">Yes</option>
+                                        <option value="No">No</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="MultipleLines" class="form-label">Multiple Lines</label>
+                                    <select class="form-select" id="MultipleLines" name="MultipleLines" required>
+                                        <option value="Yes">Yes</option>
+                                        <option value="No">No</option>
+                                        <option value="No phone service">No phone service</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="InternetService" class="form-label">Internet Service</label>
+                                    <select class="form-select" id="InternetService" name="InternetService" required>
+                                        <option value="DSL">DSL</option>
+                                        <option value="Fiber optic">Fiber optic</option>
+                                        <option value="No">No</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="OnlineSecurity" class="form-label">Online Security</label>
+                                    <select class="form-select" id="OnlineSecurity" name="OnlineSecurity" required>
+                                        <option value="Yes">Yes</option>
+                                        <option value="No">No</option>
+                                        <option value="No internet service">No internet service</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="OnlineBackup" class="form-label">Online Backup</label>
+                                    <select class="form-select" id="OnlineBackup" name="OnlineBackup" required>
+                                        <option value="Yes">Yes</option>
+                                        <option value="No">No</option>
+                                        <option value="No internet service">No internet service</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="DeviceProtection" class="form-label">Device Protection</label>
+                                    <select class="form-select" id="DeviceProtection" name="DeviceProtection" required>
+                                        <option value="Yes">Yes</option>
+                                        <option value="No">No</option>
+                                        <option value="No internet service">No internet service</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="TechSupport" class="form-label">Tech Support</label>
+                                    <select class="form-select" id="TechSupport" name="TechSupport" required>
+                                        <option value="Yes">Yes</option>
+                                        <option value="No">No</option>
+                                        <option value="No internet service">No internet service</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="StreamingTV" class="form-label">Streaming TV</label>
+                                    <select class="form-select" id="StreamingTV" name="StreamingTV" required>
+                                        <option value="Yes">Yes</option>
+                                        <option value="No">No</option>
+                                        <option value="No internet service">No internet service</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="StreamingMovies" class="form-label">Streaming Movies</label>
+                                    <select class="form-select" id="StreamingMovies" name="StreamingMovies" required>
+                                        <option value="Yes">Yes</option>
+                                        <option value="No">No</option>
+                                        <option value="No internet service">No internet service</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="Contract" class="form-label">Contract</label>
+                                    <select class="form-select" id="Contract" name="Contract" required>
+                                        <option value="Month-to-month">Month-to-month</option>
+                                        <option value="One year">One year</option>
+                                        <option value="Two year">Two year</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="PaperlessBilling" class="form-label">Paperless Billing</label>
+                                    <select class="form-select" id="PaperlessBilling" name="PaperlessBilling" required>
+                                        <option value="Yes">Yes</option>
+                                        <option value="No">No</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="PaymentMethod" class="form-label">Payment Method</label>
+                                    <select class="form-select" id="PaymentMethod" name="PaymentMethod" required>
+                                        <option value="Electronic check">Electronic check</option>
+                                        <option value="Mailed check">Mailed check</option>
+                                        <option value="Bank transfer (automatic)">Bank transfer (automatic)</option>
+                                        <option value="Credit card (automatic)">Credit card (automatic)</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="StreamingBoth" class="form-label">Streaming Both</label>
+                                    <select class="form-select" id="StreamingBoth" name="StreamingBoth" required>
+                                        <option value="Yes">Yes</option>
+                                        <option value="No">No</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="StreamingService" class="form-label">Streaming Service</label>
+                                    <select class="form-select" id="StreamingService" name="StreamingService" required>
+                                        <option value="Yes">Yes</option>
+                                        <option value="No">No</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="d-grid mt-4">
+                                <button type="submit" class="btn btn-predict">Predict Churn</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="result-card mt-4">
+                    <div class="result-header">
+                        Prediction Result
+                    </div>
+                    <div class="card-body">
+                        <div id="result" class="alert" role="alert"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function() {
+            $('#predictionForm').on('submit', function(e) {
+                e.preventDefault();
+                $.ajax({
+                    url: '/predict',
+                    type: 'post',
+                    data: $('#predictionForm').serialize(),
+                    success: function(response) {
+                        $('#result').removeClass('alert-danger alert-success').addClass(response.prediction === 'Churn' ? 'alert-danger' : 'alert-success');
+                        $('#result').html('<h4>' + response.prediction + '</h4>' +
+                                          '<p>Probability: ' + (response.probability * 100).toFixed(2) + '%</p>');
+                    },
+                    error: function(error) {
+                        console.log(error);
+                        $('#result').removeClass('alert-success').addClass('alert-danger');
+                        $('#result').html('<h4>Error</h4><p>' + error.responseJSON.error + '</p>');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
